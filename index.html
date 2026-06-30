@@ -1,559 +1,665 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CrossFit · Presença com Firebase</title>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consolidado de Fluência Leitora - Ibiapina-CE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#0b57d0',
+                        'primary-hover': '#0a45b4',
+                        surface: '#ffffff',
+                        'surface-container': '#f0f4f9',
+                        'surface-container-high': '#e9ebf0',
+                        'on-surface-de-emphasis': '#444746',
+                        'on-surface-default': '#1b1c1d',
+                        'level-red': '#b3261e',
+                        'level-orange': '#f9ab00',
+                        'level-blue': '#1558d6',
+                        'level-green': '#146c2e'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            background: linear-gradient(145deg, #0a0a0a 0%, #1a1a2e 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            padding: 20px;
+            font-family: var(--ff-sans);
+            background-color: var(--surface-container);
         }
-
-        .card {
-            max-width: 600px;
-            width: 100%;
-            background: #0f0f1a;
-            border-radius: 48px;
-            padding: 28px 22px 38px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 100, 0, 0.2);
-            animation: fadeIn 0.5s ease;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 999px;
         }
-
-        .icon-crossfit {
-            font-size: 48px;
-            background: linear-gradient(135deg, #ff6600, #ff3300);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        h1 {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #ffaa66);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-top: 6px;
-        }
-
-        .subtitulo {
-            color: #ff884d;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            background: rgba(255, 102, 0, 0.15);
-            display: inline-block;
-            padding: 5px 16px;
-            border-radius: 60px;
-            margin-top: 8px;
-        }
-
-        .status-cloud {
-            background: #1a3a2a;
-            border-radius: 20px;
-            padding: 8px 16px;
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 12px;
-            color: #4caf50;
-        }
-
-        .status-cloud.offline {
-            background: #3a1a1a;
-            color: #ff8888;
-        }
-
-        .aula-info {
-            background: #1a1a2a;
-            border-radius: 24px;
-            padding: 14px 18px;
-            margin: 18px 0;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-left: 4px solid #ff6600;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #ccc;
-            font-size: 13px;
-        }
-
-        .lista-titulo {
-            display: flex;
-            justify-content: space-between;
-            margin: 18px 0 12px;
-        }
-
-        .lista-titulo h3 {
-            color: #ffaa77;
-            font-size: 17px;
-        }
-
-        .contador {
-            background: #ff6600;
-            color: #0f0f1a;
-            padding: 4px 12px;
-            border-radius: 60px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .aluno-item {
-            background: #14141f;
-            margin: 8px 0;
-            padding: 12px 16px;
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s;
-            border: 1px solid #252535;
-            cursor: pointer;
-        }
-
-        .aluno-item:hover {
-            background: #1c1c2c;
-            transform: translateX(4px);
-        }
-
-        .aluno-nome {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            color: #e0e0e0;
-        }
-
-        .checkbox-custom {
-            width: 26px;
-            height: 26px;
-            background: #25253a;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .aluno-item.presente .checkbox-custom {
-            background: #ff6600;
-            box-shadow: 0 0 8px #ff6600;
-        }
-
-        .aluno-item.presente .checkbox-custom::after {
-            content: "✓";
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .aluno-item.presente .aluno-nome {
-            text-decoration: line-through;
-            color: #ffaa77;
-        }
-
-        .botoes-acao {
-            display: flex;
-            gap: 12px;
-            margin: 20px 0 16px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            flex: 1;
-            background: #25253a;
-            border: none;
-            padding: 12px 8px;
-            border-radius: 60px;
-            color: #ddd;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background: #353550;
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background: #ff6600;
-            color: #0f0f1a;
-        }
-
-        .btn-primary:hover {
-            background: #ff8833;
-        }
-
-        .add-aluno {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .add-aluno input {
-            flex: 1;
-            background: #1a1a2a;
-            border: 1px solid #333350;
-            padding: 12px 16px;
-            border-radius: 60px;
-            color: white;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .add-aluno input:focus {
-            border-color: #ff6600;
-        }
-
-        .btn-pequeno {
-            background: #ff6600;
-            border: none;
-            border-radius: 60px;
-            padding: 0 22px;
-            font-weight: bold;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .toast-msg {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ff6600;
-            color: #0f0f1a;
-            font-weight: bold;
-            padding: 10px 22px;
-            border-radius: 60px;
-            z-index: 1000;
-            animation: toastAnim 2s forwards;
-            font-size: 13px;
-        }
-
-        @keyframes toastAnim {
-            0% { opacity: 0; bottom: 10px; }
-            20% { opacity: 1; bottom: 30px; }
-            80% { opacity: 1; bottom: 30px; }
-            100% { opacity: 0; bottom: 10px; visibility: hidden; }
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 10px;
-            color: #555;
-            margin-top: 18px;
-        }
-
-        .loading {
-            text-align: center;
-            color: #ffaa77;
-            padding: 20px;
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
         }
     </style>
 </head>
-<body>
-<div class="card">
-    <div class="header">
-        <div class="icon-crossfit">🏋️‍♂️</div>
-        <h1>PRESENÇA · CROSSWOD</h1>
-        <div class="subtitulo">COM FIREBASE ☁️</div>
-    </div>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col antialiased">
 
-    <div id="statusCloud" class="status-cloud">
-        🔄 Conectando ao Firebase...
-    </div>
-
-    <div class="aula-info">
-        <div class="info-item">📅 <span id="dataAtual"></span></div>
-        <div class="info-item">⏱️ WOD </div>
-        <div class="info-item">👨‍🏫 Josias</div>
-        <div class="info-item">🆔 <span id="turmaId">carregando...</span></div>
-    </div>
-
-    <div class="lista-titulo">
-        <h3>🔘 CONFIRMAR PRESENÇA</h3>
-        <span class="contador" id="contadorPresentes">0/0</span>
-    </div>
-
-    <div id="listaAlunos">
-        <div class="loading">⏳ Carregando dados do servidor...</div>
-    </div>
-
-    <div class="botoes-acao">
-        <button class="btn btn-primary" id="btnConfirmarTodos">✅ CONFIRMAR TODOS</button>
-        <button class="btn" id="btnResetarPresencas">🔄 LIMPAR PRESENÇAS</button>
-        <button class="btn" id="btnNovaTurma">🆕 NOVA TURMA</button>
-    </div>
-
-    <div class="add-aluno">
-        <input type="text" id="novoAlunoNome" placeholder="Novo aluno... ex: Marcos Silva">
-        <button class="btn-pequeno" id="btnAdicionar">+</button>
-    </div>
-
-    <div class="footer">
-        ☁️ Dados salvos automaticamente na nuvem | Disponível em qualquer dispositivo
-    </div>
-</div>
-
-<script>
-    // 🔥 SUBSTITUA PELAS SUAS CREDENCIAIS DO FIREBASE 🔥
-    const firebaseConfig = {
-  apiKey: "AIzaSyDPH62ti3w1w1cxATm2eFwkMJQxM1fRnLk",
-  authDomain: "crosswod-9d73c.firebaseapp.com",
-  projectId: "crosswod-9d73c",
-  storageBucket: "crosswod-9d73c.firebasestorage.app",
-  messagingSenderId: "859805759552",
-  appId: "1:859805759552:web:799f17f58c4c7d411687a5"
-};
-
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // Variáveis globais
-    let alunos = [];
-    let turmaAtual = null;
-    let dataAtualStr = "";
-
-    // Funções auxiliares
-    function showToast(msg) {
-        let toast = document.querySelector('.toast-msg');
-        if(toast) toast.remove();
-        toast = document.createElement('div');
-        toast.className = 'toast-msg';
-        toast.innerText = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
-    }
-
-    function atualizarStatusCloud(conectado) {
-        const statusDiv = document.getElementById('statusCloud');
-        if(conectado) {
-            statusDiv.className = 'status-cloud';
-            statusDiv.innerHTML = '☁️ Conectado ao Firebase · Dados salvos em tempo real';
-        } else {
-            statusDiv.className = 'status-cloud offline';
-            statusDiv.innerHTML = '⚠️ Offline · Tentando reconectar...';
-        }
-    }
-
-    function atualizarContador() {
-        const presentes = alunos.filter(a => a.presente).length;
-        const total = alunos.length;
-        document.getElementById('contadorPresentes').innerText = `${presentes}/${total}`;
-    }
-
-    function renderizarLista() {
-        const container = document.getElementById('listaAlunos');
-        if(alunos.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">Nenhum aluno ainda. Adicione um! 👆</div>';
-            return;
-        }
-        container.innerHTML = '';
-        alunos.forEach((aluno, index) => {
-            const div = document.createElement('div');
-            div.className = `aluno-item ${aluno.presente ? 'presente' : ''}`;
-            div.setAttribute('data-index', index);
-            div.innerHTML = `
-                <div class="aluno-nome">
-                    <span class="avatar-emoticon">${aluno.emoji || '💪'}</span>
-                    ${aluno.nome}
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-blue-50 text-primary rounded-xl flex items-center justify-center">
+                    <span class="material-icons text-3xl">analytics</span>
                 </div>
-                <div class="checkbox-custom"></div>
-            `;
-            div.addEventListener('click', () => togglePresenca(index));
-            container.appendChild(div);
-        });
-        atualizarContador();
-    }
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+                        Consolidado de Fluência Leitora <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Acompanhamento</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-500 font-medium">Língua Portuguesa • 3º ao 5º Ano • Ibiapina - CE</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 self-end md:self-auto">
+                <span class="text-xs text-slate-400 font-mono">Última atualização: Junho 2026</span>
+            </div>
+        </div>
+    </header>
 
-    async function togglePresenca(index) {
-        alunos[index].presente = !alunos[index].presente;
-        renderizarLista();
-        await salvarNoFirebase();
-        const status = alunos[index].presente ? 'presente' : 'ausente';
-        showToast(`${alunos[index].nome} → ${status}`);
-    }
-
-    async function confirmarTodos() {
-        alunos.forEach(a => a.presente = true);
-        renderizarLista();
-        await salvarNoFirebase();
-        showToast('🏆 TODOS CONFIRMADOS! 💪');
-    }
-
-    async function resetarPresencas() {
-        alunos.forEach(a => a.presente = false);
-        renderizarLista();
-        await salvarNoFirebase();
-        showToast('🔄 Presenças reiniciadas');
-    }
-
-    async function adicionarAluno() {
-        const input = document.getElementById('novoAlunoNome');
-        let nome = input.value.trim();
-        if(nome === "") {
-            showToast("Digite o nome do aluno!");
-            return;
-        }
-        const emojis = ['💪','🏋️‍♂️','⚡','🔥','🏆','🥇','🤸‍♀️','🦍','🚴','🥊','💯','🎯'];
-        const randEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-        alunos.push({ nome: nome, emoji: randEmoji, presente: false });
-        input.value = '';
-        renderizarLista();
-        await salvarNoFirebase();
-        showToast(`➕ ${nome} adicionado!`);
-    }
-
-    async function novaTurma() {
-        if(confirm('🆕 Criar nova turma? A turma atual será mantida no histórico.')) {
-            turmaAtual = `${new Date().toISOString().slice(0,16)}_${Date.now()}`;
-            document.getElementById('turmaId').innerText = turmaAtual.slice(-10);
-            alunos = [];
-            carregarAlunosPadrao();
-            renderizarLista();
-            await salvarNoFirebase();
-            showToast('✨ Nova turma criada! IDs anteriores permanecem no banco');
-        }
-    }
-
-    function carregarAlunosPadrao() {
-        if(alunos.length === 0) {
-            alunos = [
-                { nome: "Bruno Mendes", emoji: "💪", presente: false },
-                { nome: "Carla Souza", emoji: "🏋️‍♀️", presente: false },
-                { nome: "Daniel Lima", emoji: "🔥", presente: false },
-                { nome: "Fernanda Rocha", emoji: "⚡", presente: false },
-                { nome: "Guilherme Nunes", emoji: "🏆", presente: false },
-                { nome: "Juliana Peixoto", emoji: "💥", presente: false }
-            ];
-        }
-    }
-
-    // SALVAR no Firebase
-    async function salvarNoFirebase() {
-        if(!turmaAtual) return;
-        try {
-            await database.ref(`presencas/${turmaAtual}/alunos`).set(alunos);
-            await database.ref(`presencas/${turmaAtual}/ultimaAtualizacao`).set(new Date().toISOString());
-            atualizarStatusCloud(true);
-        } catch(error) {
-            console.error("Erro ao salvar:", error);
-            atualizarStatusCloud(false);
-            showToast("❌ Erro ao salvar no servidor!");
-        }
-    }
-
-    // CARREGAR do Firebase
-    async function carregarDoFirebase() {
-        // Recupera a última turma usada
-        const ultimaTurmaSalva = localStorage.getItem('ultimaTurmaCrossFit');
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
         
-        if(ultimaTurmaSalva) {
-            turmaAtual = ultimaTurmaSalva;
-            document.getElementById('turmaId').innerText = turmaAtual.slice(-10);
-            try {
-                const snapshot = await database.ref(`presencas/${turmaAtual}/alunos`).once('value');
-                const dados = snapshot.val();
-                if(dados && Array.isArray(dados)) {
-                    alunos = dados;
-                    renderizarLista();
-                    atualizarStatusCloud(true);
-                    showToast('📥 Dados carregados da nuvem!');
-                } else {
-                    carregarAlunosPadrao();
-                    renderizarLista();
-                    await salvarNoFirebase();
-                }
-            } catch(error) {
-                carregarAlunosPadrao();
-                renderizarLista();
-                atualizarStatusCloud(false);
+        <section class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Total de Alunos</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">392</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span class="material-icons text-sm text-blue-500">groups</span> 11 Escolas Ativas
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-red-600 flex flex-col justify-between">
+                <span class="text-xs text-red-600 font-semibold uppercase tracking-wider">Nível 1 (Não Leitor)</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">31</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span class="text-red-600 font-bold">7,9%</span> do total geral
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500 flex flex-col justify-between">
+                <span class="text-xs text-amber-600 font-semibold uppercase tracking-wider">Nível 2 (Iniciante)</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">59</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span class="text-amber-600 font-bold">15,1%</span> do total geral
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-600 flex flex-col justify-between">
+                <span class="text-xs text-blue-600 font-semibold uppercase tracking-wider">Nível 3 (Em Desenv.)</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">148</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span class="text-blue-600 font-bold">37,8%</span> do total geral
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-600 flex flex-col justify-between col-span-2 lg:col-span-1">
+                <span class="text-xs text-emerald-600 font-semibold uppercase tracking-wider">Nível 4 (Fluente)</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">154</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span class="text-emerald-600 font-bold">39,3%</span> do total geral
+                </span>
+            </div>
+        </section>
+
+        <div class="flex border-b border-slate-200 bg-white p-1.5 rounded-xl shadow-sm gap-1 overflow-x-auto">
+            <button onclick="switchTab('visao-geral')" id="tab-visao-geral" class="tab-btn active px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all bg-blue-50 text-primary">
+                <span class="material-icons text-lg">dashboard</span> Visão Geral & Gráficos
+            </button>
+            <button onclick="switchTab('tabela-escolas')" id="tab-tabela-escolas" class="tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all text-slate-600 hover:bg-slate-50">
+                <span class="material-icons text-lg">school</span> Escolas & Quantitativo
+            </button>
+            <button onclick="switchTab('nao-leitores')" id="tab-nao-leitores" class="tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all text-slate-600 hover:bg-slate-50">
+                <span class="material-icons text-lg">person_search</span> Alunos Não-Leitores
+            </button>
+            <button onclick="switchTab('observacoes')" id="tab-observacoes" class="tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all text-slate-600 hover:bg-slate-50">
+                <span class="material-icons text-lg">comment</span> Observações & Ressalvas
+            </button>
+        </div>
+
+        <section id-section="visao-geral" class="tab-content block transition-all duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Gráfico Consolidado -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Níveis de Fluência Leitora no Município</h2>
+                            <p class="text-xs text-slate-500">Mapeamento dinâmico e comparativo por ano escolar</p>
+                        </div>
+                        <div class="flex bg-slate-100 p-1 rounded-lg self-start">
+                            <button onclick="updateChart('todos')" id="filter-todos" class="chart-filter px-3 py-1 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition-all">Consolidado</button>
+                            <button onclick="updateChart('3º Ano')" id="filter-3º" class="chart-filter px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">3º Ano</button>
+                            <button onclick="updateChart('4º Ano')" id="filter-4º" class="chart-filter px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">4º Ano</button>
+                            <button onclick="updateChart('5º Ano')" id="filter-5º" class="chart-filter px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">5º Ano</button>
+                        </div>
+                    </div>
+
+                    <!-- Representação do Gráfico Customizada com Divs e SVG para máxima robustez e flexibilidade -->
+                    <div class="h-72 w-full flex items-end justify-around gap-2 px-4 pb-6 pt-4 border-b border-slate-100 relative">
+                        <!-- Nível 1 -->
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n1" class="w-12 sm:w-16 bg-red-600 hover:bg-red-700 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 31px;">
+                                <span id="val-n1" class="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-bold text-slate-900">31</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 1</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Não Leitor</span>
+                        </div>
+                        <!-- Nível 2 -->
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n2" class="w-12 sm:w-16 bg-amber-500 hover:bg-amber-600 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 59px;">
+                                <span id="val-n2" class="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-bold text-slate-900">59</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 2</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Iniciante</span>
+                        </div>
+                        <!-- Nível 3 -->
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n3" class="w-12 sm:w-16 bg-blue-600 hover:bg-blue-700 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 148px;">
+                                <span id="label-n3" class="absolute -top-7 left-1/2 -translate-x-1/2 font-semibold text-sm">148</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 3</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Em Desenv.</span>
+                        </div>
+                        <!-- Nível 4 -->
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n4" class="w-12 sm:w-16 bg-emerald-600 hover:bg-emerald-700 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 154px;">
+                                <span id="label-n4" class="absolute -top-7 left-1/2 -translate-x-1/2 font-semibold text-sm">154</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 4</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Fluente</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap gap-4 items-center justify-center text-xs text-slate-500 font-medium pt-2">
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> Nível 1 (Não Leitor)</div>
+                        <div class="legend-item flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500"></span> Nível 2 (Iniciante)</div>
+                        <div class="legend-item flex items-center gap-1.5"><span class="legend-swatch w-3 h-3 rounded-full" style="background-color: var(--chart-1, #1558d6)"></span> Nível 3 (Em Desenvolvimento)</div>
+                        <div class="legend-item  flex items-center gap-1.5"><span class="legend-swatch" style="background-color: var(--chart-2, #046e00)"></span> Nível 4 (Fluente)</div>
+                    </div>
+                </div>
+
+                <!-- Consolidated reading table by grade -->
+                <div class="bg-surface border rounded-xl overflow-hidden shadow-sm flex flex-col p-l gap-4">
+                    <div class="flex items-center justify-between border-b pb-s">
+                        <h4 class="font-bold text-md flex items-center gap-2">
+                            <span class="material-icons text-primary">assessment</span>
+                            Consolidado das Turmas (3º, 4º e 5º Ano)
+                        </h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="interactive-table w-full text-left">
+                            <thead>
+                                <tr class="border-b bg-surface-container-low">
+                                    <th class="p-3">Série Escolar</th>
+                                    <th class="p-3 text-center text-red-500 font-semibold">Nível 1 (Não Leitor)</th>
+                                    <th class="p-3 text-center text-orange-500 font-semibold">Nível 2 (Iniciante)</th>
+                                    <th class="p-3 text-center text-blue-600 font-semibold">Nível 3 (Em Desenv.)</th>
+                                    <th class="p-3 text-center text-emerald-600 font-semibold">Nível 4 (Fluente)</th>
+                                    <th class="p-3 text-center font-bold">Total Avaliado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50 border-b">
+                                    <td class="p-3 font-semibold">3º Ano (A e B + Únicas)</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">20</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">41</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">63</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">55</td>
+                                    <td class="p-3 text-center font-extrabold text-slate-900 bg-slate-50">179</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 border-b">
+                                    <td class="p-3 font-semibold">4º Ano (A, B + Únicas)</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">7</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">8</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">40</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">44</td>
+                                    <td class="p-3 text-center font-extrabold text-slate-900 bg-slate-50">99</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 border-b">
+                                    <td class="p-3 font-semibold">5º Ano (A, B + Únicas)</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">4</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">10</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">45</td>
+                                    <td class="p-3 text-center font-bold text-slate-700">55</td>
+                                    <td class="p-3 text-center font-extrabold text-slate-900 bg-slate-50">114</td>
+                                </tr>
+                                <tr class="bg-slate-100 font-extrabold border-b">
+                                    <td class="p-3 text-primary">Total Geral Consolidado</td>
+                                    <td class="p-3 text-center text-red-700">31</td>
+                                    <td class="p-3 text-center text-amber-700">59</td>
+                                    <td class="p-3 text-center text-blue-800">148</td>
+                                    <td class="p-3 text-center text-emerald-800">154</td>
+                                    <td class="p-3 text-center text-primary bg-slate-200">392</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id-section="tabela-escolas" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Filtro de Desempenho por Escola</h2>
+                        <p class="text-xs text-slate-500">Mapeamento quantitativo e classificação de fluência por unidade</p>
+                    </div>
+                    <div class="flex items-center gap-2 max-w-sm w-full">
+                        <span class="material-icons text-slate-400">search</span>
+                        <input type="text" id="school-search" oninput="filterSchools()" placeholder="Buscar escola..." class="w-full text-xs font-semibold px-4 py-2 border rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="interactive-table w-full text-left">
+                        <thead>
+                            <tr class="border-b bg-slate-50 text-slate-500 font-semibold text-xs tracking-wider uppercase">
+                                <th class="p-4">Unidade Escolar</th>
+                                <th class="p-4 text-center text-red-600 font-semibold">Nível 1 (NL)</th>
+                                <th class="p-4 text-center text-amber-600 font-semibold">Nível 2 (INI)</th>
+                                <th class="p-4 text-center text-blue-600 font-semibold">Nível 3 (DEV)</th>
+                                <th class="p-4 text-center text-emerald-600 font-semibold">Nível 4 (FLU)</th>
+                                <th class="p-4 text-center font-bold">Total Alunos</th>
+                                <th class="p-4 text-center text-slate-700">Leitores (% Consolidado)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schools-table-body">
+                            <!-- Populated Dynamically by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id-section="nao-leitores" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span class="material-icons text-red-600">report_problem</span>
+                        Destaque Nominal: Alunos Não-Leitores (Nível 1)
+                    </h2>
+                    <p class="text-xs text-slate-500">Identificação nominal por escola para focalização e intervenção direta de alfabetização</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="nao-leitores-grid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id-section="observacoes" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Análise e Observações Pedagógicas</h2>
+                    <p class="text-xs text-slate-500">Avaliação qualitativa do cenário de leitura municipal e intervenções sugeridas</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4 text-slate-700 leading-relaxed text-sm">
+                        <p class="font-medium text-slate-800">
+                            A análise consolidada das turmas de 3º, 4º e 5º ano do município de Ibiapina-CE aponta um percurso positivo, embora heterogêneo, no desenvolvimento da fluência leitora de nossos alunos.
+                        </p>
+                        <p>
+                            Atualmente, **77,1% dos alunos** já se encontram nos níveis autônomos de competência leitora (Níveis 3 e 4), lendo em desenvolvimento ou com plena fluência. O grande desafio recai sobre o 3º ano, que ainda concentra **34,1%** de seus alunos nos níveis iniciais (Não Leitor e Iniciante), o que é característico dessa etapa de transição pedagógica, mas exige atenção contínua.
+                        </p>
+                        
+                        <div class="p-4 bg-blue-50 border-l-4 border-l-blue-600 rounded-r-xl space-y-2">
+                            <h4 class="font-bold text-blue-900 text-xs uppercase tracking-wider">Estratégias de Intervenção Recomendadas</h4>
+                            <ul class="list-disc pl-4 space-y-1 text-blue-800 text-xs font-semibold">
+                                <li><strong>Rodas de Leitura e Tutoria entre Pares:</strong> Agrupar alunos Não Leitores (Nível 1) e Iniciantes (Nível 2) com colegas Fluentes (Nível 4) em atividades de leitura compartilhada com gibis ou textos curtos.</li>
+                                <li><strong>Uso Prático do Caderno de Fluência (SME):</strong> Utilizar de forma sistemática este material estruturado para atendimentos pedagógicos dirigidos em pequenos blocos diários.</li>
+                                <li><strong>Prevenção da Exposição:</strong> Evitar cartilhas infantilizadas que desestimulam os estudantes mais velhos, priorizando contos clássicos com forte apelo visual.</li>
+                            </ul>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 font-semibold block uppercase tracking-wider">Elaborado por:</span>
+                                <span class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                    <span class="material-icons text-sm text-primary">assignment_ind</span>
+                                    Equipe de Gestão e Assessoria Pedagógica
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Highlight Box: Approximate Reality due to 5 PENDING schools -->
+                    <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200 flex flex-col justify-between gap-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 text-amber-800">
+                                <span class="material-icons text-xl">info</span>
+                                <h4 class="font-extrabold text-sm uppercase tracking-wider">Nota Importante e Ressalva</h4>
+                            </div>
+                            <p class="text-xs text-amber-900 font-bold leading-relaxed">
+                                Cumpre destacar que os dados apresentados neste consolidado consideram um <span class="text-amber-700 underline font-black">APANHADO APROXIMADO DA REALIDADE</span> do município.
+                            </p>
+                            <p class="text-xs text-amber-800 font-semibold leading-relaxed">
+                                Isto se deve ao fato de que **5 escolas do município não deram retorno** de suas turmas para inclusão neste instrumental de acompanhamento de fluência leitora.
+                            </p>
+                            <p class="text-xs text-amber-800 leading-relaxed font-medium">
+                                Logo, embora ofereça um norte claro e seguro para a tomada de decisões pedagógicas gerais, os números municipais totais de atendimento são superiores aos registrados formalmente aqui.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-white/60 border border-amber-300 rounded-xl text-[10px] font-mono text-amber-800">
+                            <strong>Status do Retorno:</strong><br>
+                            • Escolas Mapeadas: 11<br>
+                            • Escolas Pendentes: 5<br>
+                            • Total de Registros: 392
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                Painel Consolidado de Fluência Leitora • Secretaria Municipal de Educação
+                <p></p>
+                Profa: Gláucia Oliveira - Formadora de Linguagens ( Anos iniciais)
+            </span>
+            <span class="text-[11px] text-slate-400 font-medium">
+                Ibiapina - Ceará • Compromisso com a Aprendizagem
+            </span>
+        </div>
+    </footer>
+
+    <script>
+        // Centralized data from ilovepdf_merged.pdf
+        const schoolsData = [
+            {
+                name: "E.E.I.E. Rita Negreiros",
+                grades: {
+                    n1: 2, // 3º Ano B
+                    n2: 1, // 3º Ano A
+                    n3: 24, // 10 (3º B) + 14 (3º A)
+                    n4: 32, // 17 (3º B) + 15 (3º A)
+                },
+                total: 59,
+                nonReaders: ["Bernardo Silva (3º B)", "Heloisa da Silva Sales (3º B)"]
+            },
+            {
+                name: "E.E.I.E. Amadeu Camelo",
+                grades: {
+                    n1: 0,
+                    n2: 1, // 4º Ano
+                    n3: 8, // 3 (4º) + 5 (5º)
+                    n4: 8, // 3 (4º) + 5 (5º)
+                },
+                total: 17, // 7 + 10
+                nonReaders: []
+            },
+            {
+                name: "E.E.I.E. Maria Matias",
+                grades: {
+                    n1: 5, // 3 (3º) + 2 (4º)
+                    n2: 9, // 8 (3º) + 1 (5º)
+                    n3: 22, // 3 (3º) + 9 (4º) + 10 (5º)
+                    n4: 16, // 8 (4º) + 8 (5º)
+                },
+                total: 52,
+                nonReaders: [
+                    "Bernardo Nascimento de Souza (3º)", 
+                    "Davi Lucca Estevão Lopes (Laudado) (3º)", 
+                    "Maria Sophia Gomes de Carvalho (3º)",
+                    "Francisco Luccas Fernandes Rodrigues (Laudado) (4º)",
+                    "Kalleb Justino Almeida (Laudado) (4º)"
+                ]
+            },
+            {
+                name: "E.E.I.E. Francisca Rodrigues",
+                grades: {
+                    n1: 4, // 3º
+                    n2: 11, // 3º
+                    n3: 4, // 3º
+                    n4: 9, // 3º
+                },
+                total: 28,
+                nonReaders: ["Antonia Aldeniza Pereira da Silva (3º)", "João Gabriel Sousa Lima (3º)", "Maria Manuella Sousa Lino (3º)", "Maria Raíssa Carneiro Moraes (3º)"]
+            },
+            {
+                name: "E.E.I.E. Juvêncio Mendes da Rocha",
+                grades: {
+                    n1: 3, // 1 (3º B) + 1 (4º B) + 1 (5º A)
+                    n2: 10, // 7 (3º B) + 1 (4º B) + 2 (5º B)
+                    n3: 40, // 13 (3º B) + 13 (4º B) + 4 (5º A) + 10 (5º B)
+                    n4: 18, // 1 (3º B) + 0 (4º B) + 13 (5º A) + 4 (5º B)
+                },
+                total: 71,
+                nonReaders: ["Luis Davi França Araújo (3º B)", "João Lucas de Sousa Oliveira (4º B)", "Ana Beatriz da Silva Pereira (5º A)"]
+            },
+            {
+                name: "E.E.I.E. Aderaldo Negreiros",
+                grades: {
+                    n1: 4, // 2 (3º) + 2 (5º)
+                    n2: 4, // 2 (3º) + 2 (5º)
+                    n3: 15, // 9 (3º) + 6 (5º)
+                    n4: 7, // 2 (3º) + 5 (5º)
+                },
+                total: 30,
+                nonReaders: ["Davi Ribeiro de Sousa (3º)", "Maria Helena Melo Ferreira (PCD) (3º)", "Gledeson Esmael de Azevedo Pereira (PCD) (5º)", "Gleice Kely de Azevedo Pereira (5º)"]
+            },
+            {
+                name: "E.E.I.E. Francisco Domingos",
+                grades: {
+                    n1: 0,
+                    n2: 2, // 2 (3º)
+                    n3: 4, // 1 (3º) + 2 (4º) + 1 (5º)
+                    n4: 4, // 1 (3º) + 2 (4º) + 1 (5º)
+                },
+                total: 10,
+                nonReaders: []
+            },
+            {
+                name: "E.E.I.E. N. Senhora das Graças",
+                grades: {
+                    n1: 9, // 6 (3º) + 3 (4º)
+                    n2: 3, // 1 (3º) + 1 (5º A) + 1 (5º B)
+                    n3: 15, // 1 (3º) + 3 (4º) + 7 (5º A) + 4 (5º B)
+                    n4: 42, // 12 (3º) + 14 (4º) + 9 (5º A) + 7 (5º B)
+                },
+                total: 69,
+                nonReaders: [
+                    "Carlos Gabriel Alves de Oliveira (3º)", 
+                    "Davi Luis Sabino de Sousa (3º)", 
+                    "Enzo Gabriel Gonçalves do Nascimento (3º)",
+                    "Francisco Luan Gomes de Lima (3º)",
+                    "Josue Gomes Campos (3º)",
+                    "Lara Sofia Sousa Marques (3º)",
+                    "Ana Cecilia Lima de Morais (4º)",
+                    "Francisco Everto Lima Sales (4º)",
+                    "Francisco Raylan Sousa Pereira (4º)"
+                ]
+            },
+            {
+                name: "E.E.I.E. Ludugero Ferreira",
+                grades: {
+                    n1: 0,
+                    n2: 4, // 2 (4º) + 2 (5º)
+                    n3: 7, // 2 (4º) + 5 (5º)
+                    n4: 11, // 3 (4º) + 8 (5º)
+                },
+                total: 22,
+                nonReaders: []
+            },
+            {
+                name: "E.E.I.E. Dom Bosco",
+                grades: {
+                    n1: 1, // 1 (3º)
+                    n2: 4, // 3 (3º) + 1 (4º)
+                    n3: 2, // 2 (3º)
+                    n4: 7, // 1 (3º) + 6 (4º)
+                },
+                total: 14,
+                nonReaders: ["Alice Rodrigues de Araujo (3º)"]
+            },
+            {
+                name: "E.E.I.E. Domingos Ferino",
+                grades: {
+                    n1: 5, // 2 (3º) + 2 (4º) + 1 (5º)
+                    n2: 11, // 8 (3º) + 3 (4º)
+                    n3: 13, // 9 (3º) + 4 (4º)
+                    n4: 27, // 9 (3º) + 11 (4º) + 7 (5º)
+                },
+                total: 56,
+                nonReaders: [
+                    "José Wellington de Paiva Nascimento (3º)", 
+                    "Pedro Miguel Silva Lima (3º)",
+                    "Francisca Nariane Vasconcelos Silva (4º)",
+                    "Mario Henrique Gomes de Paula (4º)",
+                    "Carlos Henrique Santiago Monteiro (5º)"
+                ]
             }
-        } else {
-            // Criar nova turma
-            turmaAtual = `${new Date().toISOString().slice(0,16)}_${Date.now()}`;
-            document.getElementById('turmaId').innerText = turmaAtual.slice(-10);
-            localStorage.setItem('ultimaTurmaCrossFit', turmaAtual);
-            carregarAlunosPadrao();
-            renderizarLista();
-            await salvarNoFirebase();
+        ];
+
+        const gradeChartData = {
+            'todos': { n1: 31, n2: 59, n3: 148, n4: 154 },
+            '3º Ano': { n1: 20, n2: 41, n3: 63, n4: 55 },
+            '4º Ano': { n1: 7, n2: 8, n3: 40, n4: 44 },
+            '5º Ano': { n1: 4, n2: 10, n3: 45, n4: 55 }
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).parentNode.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'text-primary');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-50');
+            });
+
+            document.querySelector(`[id-section="${tabId}"]`).classList.remove('hidden');
+            const clickedBtn = document.getElementById(`tab-${tabId}`);
+            clickedBtn.classList.add('bg-blue-50', 'text-primary');
+            clickedBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+            setTimeout(() => {
+                window.parent.postMessage({ type: 'widget-resize', height: document.body.offsetHeight }, '*');
+            }, 50);
         }
-    }
 
-    // Data atual
-    function setDataAtual() {
-        const hoje = new Date();
-        dataAtualStr = hoje.toLocaleDateString('pt-BR') + ' - ' + hoje.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        document.getElementById('dataAtual').innerText = dataAtualStr;
-    }
+        function updateChart(filter) {
+            document.querySelectorAll('.chart-filter').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btn.classList.add('text-slate-500', 'hover:text-slate-800');
+            });
+            const filterKey = filter === 'todos' ? 'todos' : filter;
+            const targetBtn = document.getElementById(filter === 'todos' ? 'filter-todos' : `filter-${filter.substring(0,1)}`);
+            targetBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+            targetBtn.classList.remove('text-slate-500', 'hover:text-slate-800');
 
-    // Configurar monitor de conexão
-    function setupConnectionMonitor() {
-        const connectedRef = database.ref('.info/connected');
-        connectedRef.on('value', (snap) => {
-            if(snap.val() === true) {
-                atualizarStatusCloud(true);
-            } else {
-                atualizarStatusCloud(false);
-            }
-        });
-    }
+            const data = gradeChartData[filterKey];
+            const maxVal = Math.max(data.n1, data.n2, data.n3, data.n4);
 
-    // Event listeners
-    document.getElementById('btnConfirmarTodos').addEventListener('click', confirmarTodos);
-    document.getElementById('btnResetarPresencas').addEventListener('click', resetarPresencas);
-    document.getElementById('btnNovaTurma').addEventListener('click', novaTurma);
-    document.getElementById('btnAdicionar').addEventListener('click', adicionarAluno);
-    document.getElementById('novoAlunoNome').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') adicionarAluno();
-    });
+            const scale = 200 / maxVal;
 
-    // Inicialização
-    setDataAtual();
-    setupConnectionMonitor();
-    carregarDoFirebase();
-</script>
+            animateBar('chart-bar-n1', 'val-n1', data.n1, scale);
+            animateBar('chart-bar-n2', 'val-n2', data.n2, scale);
+            animateBar('chart-bar-n3', 'label-n3', data.n3, scale);
+            animateBar('chart-bar-n4', 'label-n4', data.n4, scale);
+        }
+
+        function animateBar(barId, labelId, value, scale) {
+            const bar = document.getElementById(barId);
+            const label = document.getElementById(labelId);
+            bar.style.height = `${value * scale}px`;
+            label.textContent = value;
+        }
+
+        function loadSchoolsTable() {
+            const tableBody = document.getElementById('schools-table-body');
+            tableBody.innerHTML = '';
+            
+            schoolsData.forEach(school => {
+                const total = school.grades.n1 + school.grades.n2 + school.grades.n3 + school.grades.n4;
+                const readingPct = ((school.grades.n3 + school.grades.n4) / total * 100).toFixed(1);
+                
+                const row = document.createElement('tr');
+                row.className = 'border-b hover:bg-slate-50 transition-all';
+                row.innerHTML = `
+                    <td class="p-4 font-semibold text-slate-800">${school.name}</td>
+                    <td class="p-4 text-center font-bold text-red-600 bg-red-50/20">${school.grades.n1}</td>
+                    <td class="p-4 text-center font-bold text-amber-600 bg-amber-50/20">${school.grades.n2}</td>
+                    <td class="p-4 text-center font-bold text-blue-600 bg-blue-50/20">${school.grades.n3}</td>
+                    <td class="p-4 text-center font-bold text-emerald-600 bg-emerald-50/20">${school.grades.n4}</td>
+                    <td class="p-4 text-center font-extrabold text-slate-900 bg-slate-50">${total}</td>
+                    <td class="p-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="font-bold text-slate-900 text-sm">${readingPct}%</span>
+                            <div class="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: ${readingPct}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadNaoLeitores() {
+            const grid = document.getElementById('nao-leitores-grid');
+            grid.innerHTML = '';
+
+            schoolsData.forEach(school => {
+                if (school.nonReaders.length > 0) {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all flex flex-col gap-3';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h3 class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                                <span class="material-icons text-red-600 text-sm">school</span>
+                                ${school.name}
+                            </h3>
+                            <span class="text-xs bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">${school.nonReaders.length}</span>
+                        </div>
+                        <ul class="space-y-1.5">
+                            ${school.nonReaders.map(name => `
+                                <li class="text-xs text-slate-600 font-semibold flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                    ${name}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function filterSchools() {
+            const query = document.getElementById('school-search').value.toLowerCase();
+            const rows = document.getElementById('schools-table-body').querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const name = row.querySelector('td').textContent.toLowerCase();
+                if (name.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        window.onload = function() {
+            loadSchoolsTable();
+            loadNaoLeitores();
+            updateChart('todos');
+        };
+    </script>
 </body>
 </html>
+ 
