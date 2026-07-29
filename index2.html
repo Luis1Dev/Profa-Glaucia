@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consolidado de Fluência Leitora - Ibiapina-CE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF.js para extração direta de texto no navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#0b57d0',
+                        'primary-hover': '#0a45b4',
+                        surface: '#ffffff',
+                        'surface-container': '#f0f4f9',
+                        'surface-container-high': '#e9ebf0',
+                        'on-surface-de-emphasis': '#444746',
+                        'on-surface-default': '#1b1c1d',
+                        'level-red': '#b3261e',
+                        'level-orange': '#f9ab00',
+                        'level-blue': '#1558d6',
+                        'level-green': '#146c2e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: var(--ff-sans);
+            background-color: var(--surface-container);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <!-- Header com Brasão e Identificação -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div class="shrink-0 max-w-full">
+                    <svg class="w-full h-16 sm:h-20 max-w-[450px] md:max-w-[550px]" viewBox="0 0 750 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M25,20 L135,20 L135,110 C135,145 110,175 80,175 C50,175 25,145 25,110 Z" fill="#ffffff" stroke="#00a859" stroke-width="5" stroke-linejoin="round"/>
+                        <clipPath id="topLeftClip">
+                            <path d="M25,20 L80,20 L80,100 Q80,85 25,100 Z" />
+                        </clipPath>
+                        <g clip-path="url(#topLeftClip)">
+                            <circle cx="53" cy="55" r="10" fill="#f9bd15"/>
+                            <line x1="25" y1="62" x2="80" y2="62" stroke="#00a859" stroke-width="1"/>
+                            <path d="M25,85 Q45,75 80,68 M25,95 Q50,80 80,72 M25,105 Q55,85 80,77 M35,110 Q60,90 80,83 M45,110 Q65,95 80,88" stroke="#00a859" stroke-width="1" fill="none"/>
+                        </g>
+                        <line x1="80" y1="20" x2="80" y2="80" stroke="#00a859" stroke-width="2"/>
+                        <path d="M102,90 L102,60 L97,60 L97,55 L102,52 L102,40 L105,30 L108,40 L108,52 L113,55 L113,60 L108,60 L108,90 Z" fill="none" stroke="#f9bd15" stroke-width="2" stroke-linejoin="round"/>
+                        <line x1="105" y1="26" x2="105" y2="30" stroke="#f9bd15" stroke-width="1.5"/>
+                        <path d="M90,90 L90,70 L97,64 L113,64 L120,70 L120,90 Z" fill="#ffffff" stroke="#f9bd15" stroke-width="2"/>
+                        <path d="M12,122 C45,70 115,70 148,122" stroke="#f9bd15" stroke-width="12" stroke-linecap="round" fill="none"/>
+                        <text x="175" y="55" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="28" fill="#000000">PREFEITURA DE</text>
+                        <text x="170" y="145" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="102" fill="#00a859">IBIAPINA</text>
+                        <text x="175" y="180" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="15.5" fill="#1b1c1d">Continuidade Que Transforma | Compromisso Que Avança</text>
+                    </svg>
+                </div>
+                
+                <div class="border-l-0 sm:border-l sm:border-slate-200 sm:pl-4 py-1">
+                    <span class="text-[10px] sm:text-xs bg-emerald-50 text-emerald-800 font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider inline-block mb-1 border border-emerald-100 shadow-sm">
+                        Secretaria Municipal de Educação • SME
+                    </span>
+                    <h1 class="text-lg sm:text-xl font-black tracking-tight text-slate-800">
+                        Consolidado de Fluência Leitora
+                    </h1>
+                    <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Língua Portuguesa • 3º ao 5º Ano</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-start lg:items-end gap-2">
+                <button onclick="toggleUploadArea()" class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm transition-all cursor-pointer">
+                    <span class="material-icons text-sm">cloud_upload</span>
+                    Atualizar Dados via PDF
+                </button>
+                <span id="last-update-tag" class="text-[10px] text-slate-400 font-mono">Última atualização: Julho 2026</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+        <!-- Área de Upload de PDF (Expansível) -->
+        <section id="upload-section" class="hidden bg-white border-2 border-dashed border-blue-300 p-6 rounded-3xl shadow-md transition-all">
+            <div class="flex flex-col items-center justify-center text-center gap-3">
+                <div class="w-12 h-12 bg-blue-50 text-primary rounded-full flex items-center justify-center">
+                    <span class="material-icons text-2xl">picture_as_pdf</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Importar Relatório de Nova Escola (PDF)</h3>
+                    <p class="text-xs text-slate-500 mt-1">Selecione o PDF retornado por uma escola pendente para adicioná-la ou atualizar seus dados automaticamente.</p>
+                </div>
+                <div class="flex items-center gap-3 mt-2">
+                    <input type="file" id="pdf-input" accept="application/pdf" class="hidden" onchange="handlePdfUpload(event)">
+                    <label for="pdf-input" class="bg-blue-50 text-primary border border-blue-200 hover:bg-blue-100 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-2">
+                        <span class="material-icons text-sm">folder_open</span> Escolher Arquivo PDF
+                    </label>
+                    <button onclick="openManualModal()" class="text-xs font-bold text-slate-500 hover:text-slate-800 underline">Inserir Manualmente</button>
+                </div>
+                <div id="pdf-status" class="text-xs font-semibold text-emerald-600 hidden mt-1"></div>
+            </div>
+        </section>
+
+        <!-- Indicadores (Cards Principais) -->
+        <section class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Total de Alunos</span>
+                <span id="kpi-total" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">421</span>
+                <span id="kpi-escolas-count" class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span class="material-icons text-sm text-blue-500">groups</span> 11 Escolas Ativas
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-red-600 flex flex-col justify-between">
+                <span class="text-xs text-red-600 font-semibold uppercase tracking-wider">Nível 1 (Não Leitor)</span>
+                <span id="kpi-n1" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">32</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span id="kpi-n1-pct" class="text-red-600 font-bold">7,6%</span> do total geral
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500 flex flex-col justify-between">
+                <span class="text-xs text-amber-600 font-semibold uppercase tracking-wider">Nível 2 (Iniciante)</span>
+                <span id="kpi-n2" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">59</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span id="kpi-n2-pct" class="text-amber-600 font-bold">14,0%</span> do total geral
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-600 flex flex-col justify-between">
+                <span class="text-xs text-blue-600 font-semibold uppercase tracking-wider">Nível 3 (Em Desenv.)</span>
+                <span id="kpi-n3" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">154</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span id="kpi-n3-pct" class="text-blue-600 font-bold">36,6%</span> do total geral
+                </span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-600 flex flex-col justify-between col-span-2 lg:col-span-1">
+                <span class="text-xs text-emerald-600 font-semibold uppercase tracking-wider">Nível 4 (Fluente)</span>
+                <span id="kpi-n4" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">176</span>
+                <span class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                    <span id="kpi-n4-pct" class="text-emerald-600 font-bold">41,8%</span> do total geral
+                </span>
+            </div>
+        </section>
+
+        <!-- Navegação de Abas -->
+        <div class="flex border-b border-slate-200 bg-white p-1.5 rounded-xl shadow-sm gap-1 overflow-x-auto">
+            <button onclick="switchTab('visao-geral')" id="tab-visao-geral" class="tab-btn active px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all bg-blue-50 text-primary">
+                <span class="material-icons text-lg">dashboard</span> Visão Geral & Gráficos
+            </button>
+            <button onclick="switchTab('tabela-escolas')" id="tab-tabela-escolas" class="tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all text-slate-600 hover:bg-slate-50">
+                <span class="material-icons text-lg">school</span> Escolas & Quantitativo
+            </button>
+            <button onclick="switchTab('nao-leitores')" id="tab-nao-leitores" class="tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all text-slate-600 hover:bg-slate-50">
+                <span class="material-icons text-lg">person_search</span> Alunos Não-Leitores
+            </button>
+            <button onclick="switchTab('observacoes')" id="tab-observacoes" class="tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 whitespace-nowrap transition-all text-slate-600 hover:bg-slate-50">
+                <span class="material-icons text-lg">comment</span> Observações & Ressalvas
+            </button>
+        </div>
+
+        <!-- Conteúdo Aba 1: Visão Geral -->
+        <section id-section="visao-geral" class="tab-content block transition-all duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Níveis de Fluência Leitora no Município</h2>
+                            <p class="text-xs text-slate-500">Mapeamento dinâmico e comparativo por ano escolar</p>
+                        </div>
+                        <div class="flex bg-slate-100 p-1 rounded-lg self-start">
+                            <button onclick="updateChart('todos')" id="filter-todos" class="chart-filter px-3 py-1 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition-all">Consolidado</button>
+                            <button onclick="updateChart('3º Ano')" id="filter-3º" class="chart-filter px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">3º Ano</button>
+                            <button onclick="updateChart('4º Ano')" id="filter-4º" class="chart-filter px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">4º Ano</button>
+                            <button onclick="updateChart('5º Ano')" id="filter-5º" class="chart-filter px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">5º Ano</button>
+                        </div>
+                    </div>
+
+                    <div class="h-72 w-full flex items-end justify-around gap-2 px-4 pb-6 pt-4 border-b border-slate-100 relative">
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n1" class="w-12 sm:w-16 bg-red-600 hover:bg-red-700 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 31px;">
+                                <span id="val-n1" class="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-bold text-slate-900">32</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 1</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Não Leitor</span>
+                        </div>
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n2" class="w-12 sm:w-16 bg-amber-500 hover:bg-amber-600 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 59px;">
+                                <span id="val-n2" class="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-bold text-slate-900">59</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 2</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Iniciante</span>
+                        </div>
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n3" class="w-12 sm:w-16 bg-blue-600 hover:bg-blue-700 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 148px;">
+                                <span id="label-n3" class="absolute -top-7 left-1/2 -translate-x-1/2 font-semibold text-sm">154</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 3</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Em Desenv.</span>
+                        </div>
+                        <div class="flex flex-col items-center w-full group relative">
+                            <div id="chart-bar-n4" class="w-12 sm:w-16 bg-emerald-600 hover:bg-emerald-700 rounded-t-xl transition-all duration-500 shadow-md relative" style="height: 154px;">
+                                <span id="label-n4" class="absolute -top-7 left-1/2 -translate-x-1/2 font-semibold text-sm">176</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 mt-2 text-center">Nível 4</span>
+                            <span class="text-[10px] text-slate-400 text-center hidden sm:inline">Fluente</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap gap-4 items-center justify-center text-xs text-slate-500 font-medium pt-2">
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> Nível 1 (Não Leitor)</div>
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500"></span> Nível 2 (Iniciante)</div>
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-600"></span> Nível 3 (Em Desenvolvimento)</div>
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-600"></span> Nível 4 (Fluente)</div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-3xl overflow-hidden shadow-sm flex flex-col p-6 gap-4 border-slate-200">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h4 class="font-bold text-md flex items-center gap-2 text-slate-900">
+                            <span class="material-icons text-primary">assessment</span>
+                            Consolidado das Turmas
+                        </h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b bg-slate-50 text-slate-500">
+                                    <th class="p-2.5">Série</th>
+                                    <th class="p-2.5 text-center text-red-600">N1</th>
+                                    <th class="p-2.5 text-center text-amber-600">N2</th>
+                                    <th class="p-2.5 text-center text-blue-600">N3</th>
+                                    <th class="p-2.5 text-center text-emerald-600">N4</th>
+                                    <th class="p-2.5 text-center font-bold">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b hover:bg-slate-50">
+                                    <td class="p-2.5 font-semibold">3º Ano</td>
+                                    <td id="row3-n1" class="p-2.5 text-center font-bold">20</td>
+                                    <td id="row3-n2" class="p-2.5 text-center font-bold">41</td>
+                                    <td id="row3-n3" class="p-2.5 text-center font-bold">63</td>
+                                    <td id="row3-n4" class="p-2.5 text-center font-bold">55</td>
+                                    <td id="row3-tot" class="p-2.5 text-center font-extrabold bg-slate-50">179</td>
+                                </tr>
+                                <tr class="border-b hover:bg-slate-50">
+                                    <td class="p-2.5 font-semibold">4º Ano</td>
+                                    <td id="row4-n1" class="p-2.5 text-center font-bold">7</td>
+                                    <td id="row4-n2" class="p-2.5 text-center font-bold">8</td>
+                                    <td id="row4-n3" class="p-2.5 text-center font-bold">40</td>
+                                    <td id="row4-n4" class="p-2.5 text-center font-bold">44</td>
+                                    <td id="row4-tot" class="p-2.5 text-center font-extrabold bg-slate-50">99</td>
+                                </tr>
+                                <tr class="border-b hover:bg-slate-50">
+                                    <td class="p-2.5 font-semibold">5º Ano</td>
+                                    <td id="row5-n1" class="p-2.5 text-center font-bold">5</td>
+                                    <td id="row5-n2" class="p-2.5 text-center font-bold">10</td>
+                                    <td id="row5-n3" class="p-2.5 text-center font-bold">51</td>
+                                    <td id="row5-n4" class="p-2.5 text-center font-bold">77</td>
+                                    <td id="row5-tot" class="p-2.5 text-center font-extrabold bg-slate-50">143</td>
+                                </tr>
+                                <tr class="bg-slate-100 font-extrabold border-b">
+                                    <td class="p-2.5 text-primary">Total</td>
+                                    <td id="rowtot-n1" class="p-2.5 text-center text-red-700">32</td>
+                                    <td id="rowtot-n2" class="p-2.5 text-center text-amber-700">59</td>
+                                    <td id="rowtot-n3" class="p-2.5 text-center text-blue-800">154</td>
+                                    <td id="rowtot-n4" class="p-2.5 text-center text-emerald-800">176</td>
+                                    <td id="rowtot-tot" class="p-2.5 text-center text-primary bg-slate-200">421</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conteúdo Aba 2: Escolas -->
+        <section id-section="tabela-escolas" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Filtro de Desempenho por Escola</h2>
+                        <p class="text-xs text-slate-500">Mapeamento quantitativo e classificação de fluência por unidade</p>
+                    </div>
+                    <div class="flex items-center gap-2 max-w-sm w-full">
+                        <span class="material-icons text-slate-400">search</span>
+                        <input type="text" id="school-search" oninput="filterSchools()" placeholder="Buscar escola..." class="w-full text-xs font-semibold px-4 py-2 border rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b bg-slate-50 text-slate-500 font-semibold text-xs tracking-wider uppercase">
+                                <th class="p-4">Unidade Escolar</th>
+                                <th class="p-4 text-center text-red-600 font-semibold">Nível 1 (NL)</th>
+                                <th class="p-4 text-center text-amber-600 font-semibold">Nível 2 (INI)</th>
+                                <th class="p-4 text-center text-blue-600 font-semibold">Nível 3 (DEV)</th>
+                                <th class="p-4 text-center text-emerald-600 font-semibold">Nível 4 (FLU)</th>
+                                <th class="p-4 text-center font-bold">Total Alunos</th>
+                                <th class="p-4 text-center text-slate-700">Leitores (% Consolidado)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schools-table-body">
+                            <!-- Populated Dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conteúdo Aba 3: Não Leitores -->
+        <section id-section="nao-leitores" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span class="material-icons text-red-600">report_problem</span>
+                        Destaque Nominal: Alunos Não-Leitores (Nível 1)
+                    </h2>
+                    <p class="text-xs text-slate-500">Identificação nominal por escola para focalização e intervenção direta de alfabetização</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="nao-leitores-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Conteúdo Aba 4: Observações -->
+        <section id-section="observacoes" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Análise e Observações Pedagógicas</h2>
+                    <p class="text-xs text-slate-500">Avaliação qualitativa do cenário de leitura municipal e intervenções sugeridas</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4 text-slate-700 leading-relaxed text-sm">
+                        <p class="font-medium text-slate-800">
+                            A análise consolidada das turmas do município de Ibiapina-CE aponta um percurso positivo no desenvolvimento da fluência leitora de nossos alunos.
+                        </p>
+                        <div class="p-4 bg-blue-50 border-l-4 border-l-blue-600 rounded-r-xl space-y-2">
+                            <h4 class="font-bold text-blue-900 text-xs uppercase tracking-wider">Estratégias de Intervenção Recomendadas</h4>
+                            <ul class="list-disc pl-4 space-y-1 text-blue-800 text-xs font-semibold">
+                                <li><strong>Rodas de Leitura e Tutoria entre Pares:</strong> Agrupar alunos Não Leitores (Nível 1) com colegas Fluentes (Nível 4).</li>
+                                <li><strong>Uso Prático do Caderno de Fluência (SME):</strong> Atendimentos pedagógicos dirigidos em pequenos blocos diários.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200 flex flex-col justify-between gap-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 text-amber-800">
+                                <span class="material-icons text-xl">info</span>
+                                <h4 class="font-extrabold text-sm uppercase tracking-wider">Nota Importante e Ressalva</h4>
+                            </div>
+                            <p class="text-xs text-amber-900 font-bold leading-relaxed">
+                                Os dados refletem o acompanhamento contínuo. Ao adicionar novas escolas via PDF, o painel recalcula os totais em tempo real.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-white/60 border border-amber-300 rounded-xl text-[10px] font-mono text-amber-800">
+                            <strong>Status de Monitoramento:</strong><br>
+                            • Escolas Mapeadas: <span id="status-mapeadas">11</span><br>
+                            • Escolas Pendentes: <span id="status-pendentes">5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Inclusão Manual -->
+    <div id="manual-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-md w-full mx-4 flex flex-col gap-4">
+            <h3 class="font-bold text-slate-800 text-base">Inclusão Manual / Ajuste de Escola</h3>
+            <div class="flex flex-col gap-3 text-xs">
+                <div>
+                    <label class="font-semibold text-slate-700 block mb-1">Nome da Escola</label>
+                    <input type="text" id="m-name" placeholder="Ex: E.E.I.E. Nova Esperança" class="w-full p-2 border rounded-xl">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Nível 1 (NL)</label>
+                        <input type="number" id="m-n1" value="0" class="w-full p-2 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Nível 2 (INI)</label>
+                        <input type="number" id="m-n2" value="0" class="w-full p-2 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Nível 3 (DEV)</label>
+                        <input type="number" id="m-n3" value="0" class="w-full p-2 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-700 block mb-1">Nível 4 (FLU)</label>
+                        <input type="number" id="m-n4" value="0" class="w-full p-2 border rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700 block mb-1">Alunos Não-Leitores (Separe por vírgula)</label>
+                    <textarea id="m-nonreaders" placeholder="Ex: João da Silva (3º), Maria Souza (4º)" class="w-full p-2 border rounded-xl h-16"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-2">
+                <button onclick="closeManualModal()" class="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl">Cancelar</button>
+                <button onclick="saveManualSchool()" class="px-4 py-2 text-xs font-bold bg-primary text-white rounded-xl hover:bg-primary-hover">Salvar Unidade</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider text-center sm:text-left flex items-center gap-1.5 flex-wrap justify-center">
+                <span class="text-emerald-600">Secretaria Municipal de Educação</span> • Painel Consolidado de Fluência Leitora • Formadora: Profa. Gláucia Oliveira
+            </span>
+            <span class="text-[11px] text-slate-400 font-medium">
+                Ibiapina - Ceará • Compromisso com a Aprendizagem
+            </span>
+        </div>
+    </footer>
+
+    <script>
+        // Dados Originais do Município
+        let schoolsData = [
+            { name: "E.E.I.E. Rita Negreiros", grades: { n1: 3, n2: 1, n3: 30, n4: 54 }, total: 88, nonReaders: ["Bernardo Silva (3º B)", "Heloisa da Silva Sales (3º B)", "Davi Melo Monteiro (5º B)"] },
+            { name: "E.E.I.E. Amadeu Camelo", grades: { n1: 0, n2: 1, n3: 8, n4: 8 }, total: 17, nonReaders: [] },
+            { name: "E.E.I.E. Maria Matias", grades: { n1: 5, n2: 9, n3: 22, n4: 16 }, total: 52, nonReaders: ["Bernardo Nascimento de Souza (3º)", "Davi Lucca Estevão Lopes (Laudado) (3º)", "Maria Sophia Gomes de Carvalho (3º)", "Francisco Luccas Fernandes Rodrigues (Laudado) (4º)", "Kalleb Justino Almeida (Laudado) (4º)"] },
+            { name: "E.E.I.E. Francisca Rodrigues", grades: { n1: 4, n2: 11, n3: 4, n4: 9 }, total: 28, nonReaders: ["Antonia Aldeniza Pereira da Silva (3º)", "João Gabriel Sousa Lima (3º)", "Maria Manuella Sousa Lino (3º)", "Maria Raíssa Carneiro Moraes (3º)"] },
+            { name: "E.E.I.E. Juvêncio Mendes da Rocha", grades: { n1: 3, n2: 10, n3: 40, n4: 18 }, total: 71, nonReaders: ["Luis Davi França Araújo (3º B)", "João Lucas de Sousa Oliveira (4º B)", "Ana Beatriz da Silva Pereira (5º A)"] },
+            { name: "E.E.I.E. Aderaldo Negreiros", grades: { n1: 4, n2: 4, n3: 15, n4: 7 }, total: 30, nonReaders: ["Davi Ribeiro de Sousa (3º)", "Maria Helena Melo Ferreira (PCD) (3º)", "Gledeson Esmael de Azevedo Pereira (PCD) (5º)", "Gleice Kely de Azevedo Pereira (5º)"] },
+            { name: "E.E.I.E. Francisco Domingos", grades: { n1: 0, n2: 2, n3: 4, n4: 4 }, total: 10, nonReaders: [] },
+            { name: "E.E.I.E. N. Senhora das Graças", grades: { n1: 9, n2: 3, n3: 15, n4: 42 }, total: 69, nonReaders: ["Carlos Gabriel Alves de Oliveira (3º)", "Davi Luis Sabino de Sousa (3º)", "Enzo Gabriel Gonçalves do Nascimento (3º)", "Francisco Luan Gomes de Lima (3º)", "Josue Gomes Campos (3º)", "Lara Sofia Sousa Marques (3º)", "Ana Cecilia Lima de Morais (4º)", "Francisco Everto Lima Sales (4º)", "Francisco Raylan Sousa Pereira (4º)"] },
+            { name: "E.E.I.E. Ludugero Ferreira", grades: { n1: 0, n2: 4, n3: 7, n4: 11 }, total: 22, nonReaders: [] },
+            { name: "E.E.I.E. Dom Bosco", grades: { n1: 1, n2: 4, n3: 2, n4: 7 }, total: 14, nonReaders: ["Alice Rodrigues de Araujo (3º)"] },
+            { name: "E.E.I.E. Domingos Ferino", grades: { n1: 5, n2: 11, n3: 13, n4: 27 }, total: 56, nonReaders: ["José Wellington de Paiva Nascimento (3º)", "Pedro Miguel Silva Lima (3º)", "Francisca Nariane Vasconcelos Silva (4º)", "Mario Henrique Gomes de Paula (4º)", "Carlos Henrique Santiago Monteiro (5º)"] }
+        ];
+
+        let pendingSchoolsCount = 5;
+
+        function toggleUploadArea() {
+            const sec = document.getElementById('upload-section');
+            sec.classList.toggle('hidden');
+        }
+
+        // Leitura do PDF enviado usando PDF.js
+        async function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('pdf-status');
+            statusEl.textContent = "Lendo e processando arquivo PDF...";
+            statusEl.classList.remove('hidden');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = "";
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(" ");
+                    fullText += pageText + "\n";
+                }
+
+                parseAndAddSchoolFromText(fullText, file.name);
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "Erro ao ler PDF. Abrindo formulário de confirmação...";
+                openManualModal();
+            }
+        }
+
+        // Extração de dados via Regex/Texto do PDF
+        function parseAndAddSchoolFromText(text, filename) {
+            // Tenta localizar nome da escola ou usa o nome do arquivo
+            let nameMatch = text.match(/(E\.E\.I\.E\.|ESCOLA|Escola)[^\n\r,]+/i);
+            let schoolName = nameMatch ? nameMatch[0].trim() : filename.replace('.pdf', '');
+
+            // Extração simples de números/padrões de níveis
+            let n1 = extractNumber(text, /Nível 1|Não Leitor/i) || 0;
+            let n2 = extractNumber(text, /Nível 2|Iniciante/i) || 0;
+            let n3 = extractNumber(text, /Nível 3|Em Desenvolvimento/i) || 0;
+            let n4 = extractNumber(text, /Nível 4|Fluente/i) || 0;
+
+            // Pré-preenche modal para validação rápida do usuário
+            document.getElementById('m-name').value = schoolName;
+            document.getElementById('m-n1').value = n1;
+            document.getElementById('m-n2').value = n2;
+            document.getElementById('m-n3').value = n3;
+            document.getElementById('m-n4').value = n4;
+            
+            openManualModal();
+            const statusEl = document.getElementById('pdf-status');
+            statusEl.textContent = "Dados extraídos! Verifique e confirme no formulário.";
+        }
+
+        function extractNumber(text, regex) {
+            let pos = text.search(regex);
+            if (pos !== -1) {
+                let snippet = text.substring(pos, pos + 50);
+                let numMatch = snippet.match(/\d+/);
+                return numMatch ? parseInt(numMatch[0]) : 0;
+            }
+            return 0;
+        }
+
+        function openManualModal() {
+            document.getElementById('manual-modal').classList.remove('hidden');
+        }
+
+        function closeManualModal() {
+            document.getElementById('manual-modal').classList.add('hidden');
+        }
+
+        function saveManualSchool() {
+            const name = document.getElementById('m-name').value || "Nova Unidade Escolar";
+            const n1 = parseInt(document.getElementById('m-n1').value) || 0;
+            const n2 = parseInt(document.getElementById('m-n2').value) || 0;
+            const n3 = parseInt(document.getElementById('m-n3').value) || 0;
+            const n4 = parseInt(document.getElementById('m-n4').value) || 0;
+            const nonReadersText = document.getElementById('m-nonreaders').value;
+            const nonReaders = nonReadersText ? nonReadersText.split(',').map(s => s.trim()) : [];
+
+            // Adiciona ou Atualiza a escola
+            const existingIdx = schoolsData.findIndex(s => s.name.toLowerCase() === name.toLowerCase());
+            const total = n1 + n2 + n3 + n4;
+
+            if (existingIdx >= 0) {
+                schoolsData[existingIdx] = { name, grades: { n1, n2, n3, n4 }, total, nonReaders };
+            } else {
+                schoolsData.push({ name, grades: { n1, n2, n3, n4 }, total, nonReaders });
+                if (pendingSchoolsCount > 0) pendingSchoolsCount--;
+            }
+
+            closeManualModal();
+            recalculateDashboard();
+            toggleUploadArea();
+        }
+
+        // Recalculo Geral e Re-renderização dos Elementos sem alterar Layout
+        function recalculateDashboard() {
+            let totN1 = 0, totN2 = 0, totN3 = 0, totN4 = 0;
+
+            schoolsData.forEach(s => {
+                totN1 += s.grades.n1;
+                totN2 += s.grades.n2;
+                totN3 += s.grades.n3;
+                totN4 += s.grades.n4;
+            });
+
+            const grandTotal = totN1 + totN2 + totN3 + totN4;
+
+            // Atualiza KPIs
+            document.getElementById('kpi-total').textContent = grandTotal;
+            document.getElementById('kpi-n1').textContent = totN1;
+            document.getElementById('kpi-n2').textContent = totN2;
+            document.getElementById('kpi-n3').textContent = totN3;
+            document.getElementById('kpi-n4').textContent = totN4;
+
+            document.getElementById('kpi-n1-pct').textContent = ((totN1 / grandTotal) * 100).toFixed(1) + '%';
+            document.getElementById('kpi-n2-pct').textContent = ((totN2 / grandTotal) * 100).toFixed(1) + '%';
+            document.getElementById('kpi-n3-pct').textContent = ((totN3 / grandTotal) * 100).toFixed(1) + '%';
+            document.getElementById('kpi-n4-pct').textContent = ((totN4 / grandTotal) * 100).toFixed(1) + '%';
+
+            document.getElementById('kpi-escolas-count').innerHTML = `<span class="material-icons text-sm text-blue-500">groups</span> ${schoolsData.length} Escolas Ativas`;
+            document.getElementById('status-mapeadas').textContent = schoolsData.length;
+            document.getElementById('status-pendentes').textContent = pendingSchoolsCount;
+
+            // Atualiza Tabela de Resumo Consolidado Geral
+            document.getElementById('rowtot-n1').textContent = totN1;
+            document.getElementById('rowtot-n2').textContent = totN2;
+            document.getElementById('rowtot-n3').textContent = totN3;
+            document.getElementById('rowtot-n4').textContent = totN4;
+            document.getElementById('rowtot-tot').textContent = grandTotal;
+
+            // Recarrega Gráfico e Tabelas
+            loadSchoolsTable();
+            loadNaoLeitores();
+            updateChartValues(totN1, totN2, totN3, totN4);
+        }
+
+        function updateChartValues(n1, n2, n3, n4) {
+            const maxVal = Math.max(n1, n2, n3, n4) || 1;
+            const scale = 200 / maxVal;
+
+            animateBar('chart-bar-n1', 'val-n1', n1, scale);
+            animateBar('chart-bar-n2', 'val-n2', n2, scale);
+            animateBar('chart-bar-n3', 'label-n3', n3, scale);
+            animateBar('chart-bar-n4', 'label-n4', n4, scale);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).parentNode.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'text-primary');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-50');
+            });
+
+            document.querySelector(`[id-section="${tabId}"]`).classList.remove('hidden');
+            const clickedBtn = document.getElementById(`tab-${tabId}`);
+            clickedBtn.classList.add('bg-blue-50', 'text-primary');
+            clickedBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+        }
+
+        function animateBar(barId, labelId, value, scale) {
+            const bar = document.getElementById(barId);
+            const label = document.getElementById(labelId);
+            bar.style.height = `${value * scale}px`;
+            label.textContent = value;
+        }
+
+        function loadSchoolsTable() {
+            const tableBody = document.getElementById('schools-table-body');
+            tableBody.innerHTML = '';
+            
+            schoolsData.forEach(school => {
+                const total = school.grades.n1 + school.grades.n2 + school.grades.n3 + school.grades.n4;
+                const readingPct = total > 0 ? ((school.grades.n3 + school.grades.n4) / total * 100).toFixed(1) : "0.0";
+                
+                const row = document.createElement('tr');
+                row.className = 'border-b hover:bg-slate-50 transition-all text-xs';
+                row.innerHTML = `
+                    <td class="p-4 font-semibold text-slate-800">${school.name}</td>
+                    <td class="p-4 text-center font-bold text-red-600 bg-red-50/20">${school.grades.n1}</td>
+                    <td class="p-4 text-center font-bold text-amber-600 bg-amber-50/20">${school.grades.n2}</td>
+                    <td class="p-4 text-center font-bold text-blue-600 bg-blue-50/20">${school.grades.n3}</td>
+                    <td class="p-4 text-center font-bold text-emerald-600 bg-emerald-50/20">${school.grades.n4}</td>
+                    <td class="p-4 text-center font-extrabold text-slate-900 bg-slate-50">${total}</td>
+                    <td class="p-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="font-bold text-slate-900">${readingPct}%</span>
+                            <div class="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: ${readingPct}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadNaoLeitores() {
+            const grid = document.getElementById('nao-leitores-grid');
+            grid.innerHTML = '';
+
+            schoolsData.forEach(school => {
+                if (school.nonReaders && school.nonReaders.length > 0) {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all flex flex-col gap-3';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h3 class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                                <span class="material-icons text-red-600 text-sm">school</span>
+                                ${school.name}
+                            </h3>
+                            <span class="text-xs bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">${school.nonReaders.length}</span>
+                        </div>
+                        <ul class="space-y-1.5">
+                            ${school.nonReaders.map(name => `
+                                <li class="text-xs text-slate-600 font-semibold flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                    ${name}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function filterSchools() {
+            const query = document.getElementById('school-search').value.toLowerCase();
+            const rows = document.getElementById('schools-table-body').querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const name = row.querySelector('td').textContent.toLowerCase();
+                row.style.display = name.includes(query) ? '' : 'none';
+            });
+        }
+
+        window.onload = function() {
+            recalculateDashboard();
+        };
+    </script>
+</body>
+</html>
